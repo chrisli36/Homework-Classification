@@ -44,6 +44,7 @@ def upload_file():
         return jsonify({'error': 'Invalid file format. Please upload an image (png, jpg, jpeg, gif)'})
 
 def predict_image(image_path):
+    #loaded_cnn = keras.models.load_model('cnn_classifier_128.keras')
     loaded_cnn = pickle.load(open('knn_classifier.pkl', 'rb'))
     pic = np.array([preprocess_image(image_path)])
     y_pred = loaded_cnn.predict(pic)
