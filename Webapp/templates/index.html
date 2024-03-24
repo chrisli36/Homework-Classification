@@ -80,8 +80,7 @@
             <input type="file" id="fileInput">
             <button id="uploadBtn">Upload</button>
         </div>
-        <div id="prediction"></div>
-        <div id="error"></div>
+        <div id="message"></div>
     </div>
 
     <script>
@@ -92,6 +91,20 @@
                 var formData = new FormData();
                 formData.append('file', file);
 
+                // Check if a file is selected
+                if (!file) {
+                    $('#message').text('Please select a file.');
+                    return;
+                }
+
+                // Check file type
+                var fileType = file.type.split('/').pop();
+                if (fileType !== 'png' && fileType !== 'jpg' && fileType !== 'jpeg' && fileType !== 'gif') {
+                    $('#message').text('Invalid file format. Please upload an image (png, jpg, jpeg, heic).');
+                    return;
+                }
+
+                // Proceed with upload if file type is valid
                 $.ajax({
                     url: '/upload',
                     type: 'POST',
@@ -99,13 +112,11 @@
                     contentType: false,
                     processData: false,
                     success: function(response){
-                        $('#prediction').text('Prediction: ' + response.prediction);
-                        $('#error').text('');
+                        $('#message').text('Prediction: ' + response.prediction);
                     },
                     error: function(xhr, status, error){
                         var errorMessage = xhr.responseJSON.error;
-                        $('#prediction').text('');
-                        $('#error').text(errorMessage);
+                        $('#message').text(errorMessage);
                     }
                 });
             });
